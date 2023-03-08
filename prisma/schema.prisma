@@ -18,6 +18,8 @@ model SupportAgent {
 
 model SupportCase {
   id Int @id @default(autoincrement())
+  createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP"))
+  orderId Int
   reason String @default("RETURN") // Would have used an enum but sqlite doesn't support it
   assignedTo SupportAgent @relation(fields: [supportAgentId], references: [id])
   supportAgentId Int @unique

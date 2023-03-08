@@ -7,11 +7,10 @@ export async function findAll(): Promise<SupportAgent[]> {
   return supportAgents;
 }
 
-export async function createAgent(name: string): Promise<SupportAgent> {
+export async function createAgent(data: {name: string}): Promise<SupportAgent> {
+  console.log('create agent', data)
   return await prisma.supportAgent.create({
-    data: {
-      name
-    }
+    data
   })
 }
 
