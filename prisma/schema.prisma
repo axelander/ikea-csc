@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:database.db"
+}
+
+model SupportAgent {
+  id Int @id @default(autoincrement())
+  name String
+  activeSupportCase SupportCase?
+}
+
+model SupportCase {
+  id Int @id @default(autoincrement())
+  reason String @default("RETURN") // Would have used an enum but sqlite doesn't support it
+  assignedTo SupportAgent @relation(fields: [supportAgentId], references: [id])
+  supportAgentId Int @unique
+  resolved Boolean @default(false)
+}
