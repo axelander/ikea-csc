@@ -1,315 +1,52 @@
+import { useState } from 'react';
+import useSWRMutation from 'swr/mutation';
+import { CreateSupportCaseArgs } from './api/support-cases';
+
 export default function Home() {
+  const [orderId, setOrderId] = useState<string>('');
+  const { trigger, isMutating, data, error } = useSWRMutation(
+    '/api/support-cases',
+    (url: string, { arg }: { arg: CreateSupportCaseArgs }) => {
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(arg),
+      }).then((res) => setOrderId(''));
+    }
+  );
+
+  const onCreateSupportCase = () => {
+    if (!orderId) return;
+    trigger({ orderId });
+  };
+
   return (
-    <div className="grid grid-cols-2 col-span-3 px-4 sm:px-6 lg:px-8">
-      <form className="space-y-8 divide-y divide-gray-200">
+    <div className="grid grid-cols-2 col-span-3 px-4 sm:px-6 lg:px-6">
+      <div className="space-y-8 divide-y divide-gray-200">
         <div className="space-y-8 divide-y divide-gray-200">
           <div>
             <div>
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Report support case
-              </h3>
+              <h3 className="text-base font-semibold leading-6 text-gray-900">Report return</h3>
             </div>
 
-            <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="about"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Reason
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="about"
-                    name="about"
-                    rows={3}
-                    className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                    defaultValue={""}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8">
-            <div>
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Personal Information
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Use a permanent address where you can receive mail.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="last-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Last name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-4">
               <div className="sm:col-span-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Email address
+                <label htmlFor="order-id" className="block text-sm font-medium leading-6 text-gray-900">
+                  Order id
                 </label>
                 <div className="mt-2">
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Country
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="country"
-                    name="country"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-6">
-                <label
-                  htmlFor="street-address"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Street address
-                </label>
-                <div className="mt-2">
-                  <input
+                    onChange={(e) => setOrderId(e.target.value)}
+                    value={orderId}
                     type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
+                    name="order-id"
+                    id="order-id"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="city"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  City
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    autoComplete="address-level2"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="region"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  State / Province
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="region"
-                    id="region"
-                    autoComplete="address-level1"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="postal-code"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  ZIP / Postal code
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="postal-code"
-                    id="postal-code"
-                    autoComplete="postal-code"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8">
-            <div>
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Notifications
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                We'll always let you know about important changes, but you pick
-                what else you want to hear about.
-              </p>
-            </div>
-            <div className="mt-6">
-              <fieldset>
-                <legend className="sr-only">By Email</legend>
-                <div
-                  className="text-sm font-semibold leading-6 text-gray-900"
-                  aria-hidden="true"
-                >
-                  By Email
-                </div>
-                <div className="mt-4 space-y-4">
-                  <div className="relative flex items-start">
-                    <div className="flex items-center h-6">
-                      <input
-                        id="comments"
-                        name="comments"
-                        type="checkbox"
-                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <label
-                        htmlFor="comments"
-                        className="text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Comments
-                      </label>
-                      <p className="text-sm text-gray-500">
-                        Get notified when someones posts a comment on a posting.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="relative flex items-start">
-                    <div className="flex items-center h-6">
-                      <input
-                        id="candidates"
-                        name="candidates"
-                        type="checkbox"
-                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <label
-                        htmlFor="candidates"
-                        className="text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Candidates
-                      </label>
-                      <p className="text-sm text-gray-500">
-                        Get notified when a candidate applies for a job.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="relative flex items-start">
-                    <div className="flex items-center h-6">
-                      <input
-                        id="offers"
-                        name="offers"
-                        type="checkbox"
-                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <label
-                        htmlFor="offers"
-                        className="text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Offers
-                      </label>
-                      <p className="text-sm text-gray-500">
-                        Get notified when a candidate accepts or rejects an
-                        offer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset className="mt-6">
-                <legend className="text-sm font-semibold leading-6 text-gray-900 contents">
-                  Push Notifications
-                </legend>
-                <p className="text-sm text-gray-500">
-                  These are delivered via SMS to your mobile phone.
-                </p>
-                <div className="mt-4 space-y-4">
-                  <div className="flex items-center">
-                    <input
-                      id="push-everything"
-                      name="push-notifications"
-                      type="radio"
-                      className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                    />
-                    <label
-                      htmlFor="push-everything"
-                      className="block ml-3 text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Everything
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      id="push-email"
-                      name="push-notifications"
-                      type="radio"
-                      className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                    />
-                    <label
-                      htmlFor="push-email"
-                      className="block ml-3 text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Same as email
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      id="push-nothing"
-                      name="push-notifications"
-                      type="radio"
-                      className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                    />
-                    <label
-                      htmlFor="push-nothing"
-                      className="block ml-3 text-sm font-medium leading-6 text-gray-900"
-                    >
-                      No push notifications
-                    </label>
-                  </div>
-                </div>
-              </fieldset>
             </div>
           </div>
         </div>
@@ -317,20 +54,16 @@ export default function Home() {
         <div className="pt-5">
           <div className="flex justify-end">
             <button
-              type="button"
-              className="px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
+              disabled={!orderId}
               type="submit"
+              onClick={onCreateSupportCase}
               className="inline-flex justify-center px-3 py-2 ml-3 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Save
+              Send
             </button>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
