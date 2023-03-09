@@ -1,13 +1,12 @@
-import { PrismaClient, SupportAgent, SupportCase } from '@prisma/client';
+import { SupportAgent, SupportCase, Prisma } from '@prisma/client';
+import prisma from './libs/prisma';
 import * as supportAgentsService from './support-agents.service';
-
-const prisma = new PrismaClient();
 
 export async function findAll(): Promise<SupportCase[]> {
   return prisma.supportCase.findMany();
 }
 
-export async function createCase(data: { orderId: string }): Promise<SupportCase> {
+export async function createCase(data: Prisma.SupportCaseCreateInput): Promise<SupportCase> {
   const supportCase = await prisma.supportCase.create({
     data,
   });

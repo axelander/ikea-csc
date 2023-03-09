@@ -71,6 +71,7 @@ export const SupportAgentsTable: React.FC<SupportAgentsTableProps> = ({
         </div>
         <div className="ml-4">
           <button
+            disabled={newAgentName.length === 0}
             onClick={() => {
               onAddNewAgent(newAgentName);
               setNewAgentName('');
