@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { SupportCase } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import * as supportCasesService from '../../support-cases.service';
+import * as supportCasesService from '../../../support-cases.service';
 
 export type GetSupportCasesResponse = {
   supportCases: SupportCase[];

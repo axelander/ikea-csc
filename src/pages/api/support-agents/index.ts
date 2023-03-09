@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { SupportAgent } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import * as supportAgentsService from '../../support-agents.service';
+import * as supportAgentsService from '../../../support-agents.service';
 
 export type GetSupportAgentsResponse = {
   supportAgents: SupportAgent[];

@@ -2,20 +2,17 @@ import { useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { CreateSupportCaseArgs } from './api/support-cases';
 
-export default function Home() {
+export default function ReportReturn() {
   const [orderId, setOrderId] = useState<string>('');
-  const { trigger, isMutating, data, error } = useSWRMutation(
-    '/api/support-cases',
-    (url: string, { arg }: { arg: CreateSupportCaseArgs }) => {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(arg),
-      }).then((res) => setOrderId(''));
-    }
-  );
+  const { trigger } = useSWRMutation('/api/support-cases', (url: string, { arg }: { arg: CreateSupportCaseArgs }) => {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(arg),
+    }).then((res) => setOrderId(''));
+  });
 
   const onCreateSupportCase = () => {
     if (!orderId) return;

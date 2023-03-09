@@ -4,7 +4,7 @@ import * as supportAgentsService from './support-agents.service';
 const prisma = new PrismaClient();
 
 export async function findAll(): Promise<SupportCase[]> {
-  return await prisma.supportCase.findMany();
+  return prisma.supportCase.findMany();
 }
 
 export async function createCase(data: { orderId: string }): Promise<SupportCase> {
@@ -17,15 +17,8 @@ export async function createCase(data: { orderId: string }): Promise<SupportCase
   return supportCase;
 }
 
-export async function updateCase(id: number, data: Omit<SupportCase, 'id'>): Promise<SupportCase> {
-  return await prisma.supportCase.update({
-    data,
-    where: { id },
-  });
-}
-
 export async function getUnassignedCases(limit: number): Promise<SupportCase[]> {
-  return await prisma.supportCase.findMany({
+  return prisma.supportCase.findMany({
     orderBy: {
       createdAt: 'asc',
     },
@@ -38,24 +31,6 @@ export async function getUnassignedCases(limit: number): Promise<SupportCase[]> 
 }
 
 export async function assignAgentToCase(agent: SupportAgent, supportCase: SupportCase) {
-  console.log(
-    JSON.stringify(
-      {
-        data: {
-          agent: {
-            connect: {
-              id: agent.id,
-            },
-          },
-        },
-        where: {
-          id: supportCase.id,
-        },
-      },
-      null,
-      2
-    )
-  );
   await prisma.supportCase.update({
     data: {
       agent: {
@@ -68,4 +43,23 @@ export async function assignAgentToCase(agent: SupportAgent, supportCase: Suppor
       id: supportCase.id,
     },
   });
+}
+
+export async function markCasesResolved(caseIds: number[]): Promise<SupportCase[]> {
+  await prisma.supportCase.updateMany({
+    data: {
+      resolved: true,
+      supportAgentId: null,
+    },
+    where: {
+      id: {
+        in: caseIds,
+      },
+    },
+  });
+
+  // Assign new cases to agents when resolving cases
+  supportAgentsService.assignAvailableAgents();
+
+  return prisma.supportCase.findMany({ where: { id: { in: caseIds } } });
 }
