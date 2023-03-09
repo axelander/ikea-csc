@@ -1,3 +1,15 @@
+# Notes
+
+To run the app locally:
+```bash
+npm install
+
+npm run dev
+```
+![alt text](https://github.com/axelander/ikea-csc/blob/main/screenshots/Screenshot%202023-03-09%20at%2011.39.06.png)
+![alt text](https://github.com/axelander/ikea-csc/blob/main/screenshots/Screenshot%202023-03-09%20at%2011.39.31.png)
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
