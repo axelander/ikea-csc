@@ -7,19 +7,13 @@ export async function findAll(): Promise<SupportAgent[]> {
 }
 
 export async function createAgent(data: Prisma.SupportAgentCreateInput): Promise<SupportAgent> {
-  const agent = await prisma.supportAgent.create({
+  return prisma.supportAgent.create({
     data,
   });
-
-  await assignAvailableAgents();
-
-  return agent;
 }
 
 export async function deleteAgents(ids: number[]): Promise<boolean> {
   await prisma.supportAgent.deleteMany({ where: { id: { in: ids } } });
-  // When deleting an agent they could have an assigned case, try to reassign to other available agent
-  await assignAvailableAgents();
   return true;
 }
 

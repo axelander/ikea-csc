@@ -15,6 +15,7 @@ export type CreateSupportAgentResponse = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const supportAgent = await supportAgentsService.createAgent(req.body as CreateSupportAgentArgs);
+    await supportAgentsService.assignAvailableAgents();
     return res.status(201).json({ supportAgent });
   }
 

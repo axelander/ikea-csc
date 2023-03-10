@@ -2,6 +2,7 @@
 import { SupportCase } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as supportCasesService from '../../../support-cases.service';
+import * as supportAgentsService from '../../../support-agents.service';
 
 export type GetSupportCasesResponse = {
   supportCases: SupportCase[];
@@ -15,6 +16,7 @@ export type CreateSupportCaseResponse = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const supportCase = await supportCasesService.createCase(req.body as CreateSupportCaseArgs);
+    await supportAgentsService.assignAvailableAgents();
     return res.status(201).json({ supportCase });
   }
 

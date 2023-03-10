@@ -8,6 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const { ids } = req.body as DeleteAgentsArgs;
     await supportAgentsService.deleteAgents(ids);
+    await supportAgentsService.assignAvailableAgents();
     return res.send(204);
   }
 
