@@ -6,32 +6,25 @@ import { SupportAgentsTable, SupportAgentsTableProps } from '@/components/Suppor
 import { SupportCasesTable } from '@/components/SupportCasesTable';
 import { MarkSupportCasesResolvedArgs } from './api/support-cases/mark-resolved';
 import { DeleteAgentsArgs } from './api/support-agents/delete-agents';
-
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+import { getReq, postReq } from '@/libs/request';
 
 export default function Admin() {
   const {
     data: agentsResponse,
     isLoading: agentsLoading,
     mutate: mutateAgents,
-  } = useSWR<GetSupportAgentsResponse>('/api/support-agents', fetcher);
+  } = useSWR<GetSupportAgentsResponse>('/api/support-agents', getReq);
 
   const {
     data: supportCasesResponse,
     isLoading: supportCasesLoading,
     mutate: mutateCases,
-  } = useSWR<GetSupportCasesResponse>('/api/support-cases', fetcher);
+  } = useSWR<GetSupportCasesResponse>('/api/support-cases', getReq);
 
   const { trigger: triggerAddAgent } = useSWRMutation(
     '/api/support-agents',
     (url: string, { arg }: { arg: CreateSupportAgentArgs }) => {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(arg),
-      }).then((res) => {
+      return postReq(url, arg).then((res) => {
         mutateCases();
         return res.json();
       });
@@ -41,13 +34,7 @@ export default function Admin() {
   const { trigger: triggerMarkAsResolved } = useSWRMutation(
     '/api/support-cases/mark-resolved',
     (url: string, { arg }: { arg: MarkSupportCasesResolvedArgs }) => {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(arg),
-      }).then((res) => {
+      return postReq(url, arg).then((res) => {
         mutateCases();
         return res.json();
       });
@@ -57,13 +44,7 @@ export default function Admin() {
   const { trigger: triggerDeleteAgents } = useSWRMutation(
     '/api/support-agents/delete-agents',
     (url: string, { arg }: { arg: DeleteAgentsArgs }) => {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(arg),
-      }).then(() => {
+      return postReq(url, arg).then(() => {
         mutateAgents();
         mutateCases();
       });
@@ -102,7 +83,7 @@ export default function Admin() {
         onAddNewAgent={onAddNewAgent}
         onDeleteAgents={onDeleteAgents}
       />
-      <div className="pt-20">
+      <div className="pt-20 pb-20">
         <SupportCasesTable cases={supportCasesResponse.supportCases} />
       </div>
     </>
